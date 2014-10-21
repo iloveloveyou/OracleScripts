@@ -1,0 +1,38 @@
+run
+
+{
+
+crosscheck archivelog all;
+
+sql 'alter system checkpoint';
+
+sql 'alter system archive log current';  # if DB in read only comment line !
+
+crosscheck backup device type disk;  
+crosscheck archivelog all device type disk;
+
+
+#section size 50g
+backup as compressed backupset incremental level=0 database include current controlfile tag=&2 ;
+
+sql 'alter system archive log current';
+
+#
+#delete noprompt obsolete device type disk;
+
+backup as compressed backupset archivelog all delete input tag=&3;
+
+
+#
+#delete noprompt obsolete device type disk;
+delete noprompt obsolete RECOVERY WINDOW OF &1 DAYS device type disk;
+
+#
+sql "alter database backup controlfile to trace as ''${PATH_TO_BACKUP}/control_trace_${date}.ctl''";
+sql "create pfile=''${PATH_TO_BACKUP}/init_db_${date}.ora'' from spfile";
+backup current controlfile format '${PATH_TO_BACKUP}/control_db_%d_%U';
+
+backup current controlfile for standby format '${PATH_TO_BACKUP}/standby_control_${date}.ctl';
+}
+
+

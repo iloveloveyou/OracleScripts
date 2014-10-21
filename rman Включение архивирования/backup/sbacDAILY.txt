@@ -1,0 +1,9 @@
+run
+{
+backup as compressed backupset incremental level=1 cumulative database include current controlfile tag='DAILY_DB';
+
+sql 'alter system archive log current';  # if DB in read only comment line !
+
+backup as compressed backupset archivelog all delete input tag='DAYLY_ARCH' ;
+
+}
