@@ -18,5 +18,5 @@ export BACKUP_STORE_DAYS=2
 ###############################
 ## remote host for test restore
 ###############################
-export REMOTE_HOST=10.0.5.59
+export REMOTE_HOST=x.x.x.x
 export REMOTE_HOST_DIR=/u01/backup/TESTDB
